@@ -1,9 +1,11 @@
 package sample.compositemonad;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -11,16 +13,16 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import com.google.common.base.Function;
 
 public class Enum<T> {
-    public final java.util.Set<T> components;
+    public final Set<T> components;
 
-    public Enum(java.util.Set<T> components) {
+    public Enum(Collection<T> components) {
         if (components == null) {
             throw new IllegalArgumentException("the arg should not be null");
         }
-        this.components = Collections.unmodifiableSet(components);
+        this.components = Collections.unmodifiableSet(new HashSet<T>(components));
     }
     public Enum(T... components) {
-        this(new HashSet<T>(Arrays.asList(components)));
+        this(Arrays.asList(components));
     }
     public final boolean equals(Object other) {
         return EqualsBuilder.reflectionEquals(this, other);
@@ -47,13 +49,6 @@ public class Enum<T> {
         }
         return new Enum<Y>(results);
     }
-    public static <X, Y> Function<Enum<X>, Enum<Y>> e_map(final Function<X, Y> f) {
-        return new Function<Enum<X>, Enum<Y>>() {
-            public Enum<Y> apply(Enum<X> l) {
-                return e_map(f, l);
-            }
-        };
-    }
     public static <X> Enum<X> e_flatten(Enum<Enum<X>> ee) {
         HashSet<X> results = new HashSet<X>();
         for (Enum<X> e : ee.components) {
@@ -61,24 +56,33 @@ public class Enum<T> {
         }
         return new Enum<X>(results);
     }
-    public static <X> Function<Enum<Enum<X>>, Enum<X>> e_flatten() {
-    	return new Function<Enum<Enum<X>>, Enum<X>>() {
-			public Enum<X> apply(Enum<Enum<X>> ee) {
-				return e_flatten(ee);
-			}
-		};
-    }
     public static <X> Enum<X> e_unit(X x) {
         HashSet<X> results = new HashSet<X>();
         results.add(x);
         return new Enum<X>(results);
     }
+
+    // Function version
+    public static <X, Y> Function<Enum<X>, Enum<Y>> e_map(final Function<X, Y> f) {
+        return new Function<Enum<X>, Enum<Y>>() {
+            public Enum<Y> apply(Enum<X> l) {
+                return e_map(f, l);
+            }
+        };
+    }
+    public static <X> Function<Enum<Enum<X>>, Enum<X>> e_flatten() {
+        return new Function<Enum<Enum<X>>, Enum<X>>() {
+            public Enum<X> apply(Enum<Enum<X>> ee) {
+                return e_flatten(ee);
+            }
+        };
+    }
     public static <X> Function<X, Enum<X>> e_unit() {
-    	return new Function<X, Enum<X>>() {
-			public Enum<X> apply(X x) {
-				return e_unit(x);
-			}
-		};
+        return new Function<X, Enum<X>>() {
+            public Enum<X> apply(X x) {
+                return e_unit(x);
+            }
+        };
     }
 
 }

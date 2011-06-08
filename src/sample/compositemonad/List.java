@@ -22,26 +22,6 @@ public class List<T> {
     public List(T... components) {
         this(Arrays.asList(components));
     }
-    public boolean isEmpty() {
-        return components.isEmpty();
-    }
-    public List<T> appended(T x) {
-        ArrayList<T> results = new ArrayList<T>(components);
-        results.add(x);
-        return new List<T>(results);
-    }
-    public T head() {
-    	if (isEmpty()) {
-    		throw new IllegalStateException("empty list has no head.");
-    	}
-        return components.get(0);
-    }
-    public List<T> tail() {
-    	if (isEmpty()) {
-    		throw new IllegalStateException("empty list has no tail.");
-    	}
-        return new List<T>(components.subList(1, components.size()));
-    }
     public final boolean equals(Object other) {
         return EqualsBuilder.reflectionEquals(this, other);
     }
@@ -59,6 +39,30 @@ public class List<T> {
         sb.append(']');
         return sb.toString();
     }
+    // —v‘f‚ª‹ó‚©‚Ç‚¤‚©‚ğ”»’è
+    public boolean isEmpty() {
+        return components.isEmpty();
+    }
+    // æ“ª‚Ì—v‘f‚ğ–ß‚·
+    public T head() {
+        if (isEmpty()) {
+            throw new IllegalStateException("empty list has no head.");
+        }
+        return components.get(0);
+    }
+    // æ“ª‚Ì—v‘f‚ğæ‚èœ‚¢‚½c‚è‚ğList‚Å–ß‚·
+    public List<T> tail() {
+        if (isEmpty()) {
+            throw new IllegalStateException("empty list has no tail.");
+        }
+        return new List<T>(components.subList(1, components.size()));
+    }
+    // ––”ö‚Éx‚ğ•t‚¯‰Á‚¦‚½List‚ğ–ß‚·
+    public List<T> appended(T x) {
+        ArrayList<T> results = new ArrayList<T>(components);
+        results.add(x);
+        return new List<T>(results);
+    }
 
     public static <X, Y> List<Y> l_map(Function<X, Y> f, List<X> l) {
         ArrayList<Y> results = new ArrayList<Y>();
@@ -67,13 +71,6 @@ public class List<T> {
         }
         return new List<Y>(results);
     }
-    public static <X, Y> Function<List<X>, List<Y>> l_map(final Function<X, Y> f) {
-        return new Function<List<X>, List<Y>>() {
-            public List<Y> apply(List<X> l) {
-                return l_map(f, l);
-            }
-        };
-    }
     public static <X> List<X> l_flatten(List<List<X>> ll) {
         ArrayList<X> results = new ArrayList<X>();
         for (List<X> l : ll.components) {
@@ -81,17 +78,26 @@ public class List<T> {
         }
         return new List<X>(results);
     }
+    public static <X> List<X> l_unit(X x) {
+        ArrayList<X> results = new ArrayList<X>();
+        results.add(x);
+        return new List<X>(results);
+    }
+
+    // Function version
+    public static <X, Y> Function<List<X>, List<Y>> l_map(final Function<X, Y> f) {
+        return new Function<List<X>, List<Y>>() {
+            public List<Y> apply(List<X> l) {
+                return l_map(f, l);
+            }
+        };
+    }
     public static <X> Function<List<List<X>>, List<X>> l_flatten() {
         return new Function<List<List<X>>, List<X>>() {
             public List<X> apply(List<List<X>> ll) {
                 return l_flatten(ll);
             }
         };
-    }
-    public static <X> List<X> l_unit(X x) {
-        ArrayList<X> results = new ArrayList<X>();
-        results.add(x);
-        return new List<X>(results);
     }
     public static <X> Function<X, List<X>> l_unit() {
         return new Function<X, List<X>>() {

@@ -33,6 +33,7 @@ public class EnumTest {
                 new Enum<Integer>(1, -3, 7),
                 new Enum<Integer>(1, 2)
             );
+        System.out.println("ee = " + ee);
         Enum<Integer> result = e_flatten(ee);
         System.out.println("result = " + result);
         assertEquals(new Enum<Integer>(0, 1, -3, 7, 2), result);
@@ -43,39 +44,40 @@ public class EnumTest {
         assertEquals(new Enum<String>("hoge"), e_unit("hoge"));
     }
 
-	// e_flatten(e_unit(e)) = e
+    // 代数スタイルのモナド則
+    // モナド則(1) e_flatten(e_unit(e)) = e
     @Test
     public void testMonad1() {
         Enum<Integer> enum1 = new Enum<Integer>(1, -3, 7);
-    	assertEquals(e_flatten(e_unit(enum1)), enum1);
+        assertEquals(e_flatten(e_unit(enum1)), enum1);
     }
 
-	// e_flatten(e_map(e_unit, e)) = e
+    // モナド則(2) e_flatten(e_map(e_unit, e)) = e
     @Test
     public void testMonad2() {
         Enum<Integer> enum1 = new Enum<Integer>(1, -3, 7);
-    	assertEquals(e_flatten(e_map(Enum.<Integer>e_unit(), enum1)), enum1);
+        assertEquals(e_flatten(e_map(Enum.<Integer>e_unit(), enum1)), enum1);
     }
 
-	// e_flatten(e_flatten(eee)) = e_flatten(e_map(e_flatten, eee))
+    // モナド則(3) e_flatten(e_flatten(eee)) = e_flatten(e_map(e_flatten, eee))
     @Test
     public void testMonad3() {
-    	Enum<Enum<Enum<Integer>>> eee = 
-    		new Enum<Enum<Enum<Integer>>>(
-				new Enum<Enum<Integer>>(
-		                new Enum<Integer>(0),
-		                new Enum<Integer>(1, -3, 7),
-		                new Enum<Integer>(1, 2)
-		            ),
-	            new Enum<Enum<Integer>>(
-	                    new Enum<Integer>(3),
-	                    new Enum<Integer>(5, 6, 7),
-	                    new Enum<Integer>(2, 4)
-	                )
-			);
+        Enum<Enum<Enum<Integer>>> eee = 
+            new Enum<Enum<Enum<Integer>>>(
+                new Enum<Enum<Integer>>(
+                        new Enum<Integer>(0),
+                        new Enum<Integer>(1, -3, 7),
+                        new Enum<Integer>(1, 2)
+                    ),
+                new Enum<Enum<Integer>>(
+                        new Enum<Integer>(3),
+                        new Enum<Integer>(5, 6, 7),
+                        new Enum<Integer>(2, 4)
+                    )
+            );
         System.out.println("eee = " + eee);
-    	assertEquals(
-    			e_flatten(e_flatten(eee)),
-    			e_flatten(e_map(EnumOfList.<Integer>e_flatten(), eee)));
+        assertEquals(
+                e_flatten(e_flatten(eee)),
+                e_flatten(e_map(EnumOfList.<Integer>e_flatten(), eee)));
     }
 }

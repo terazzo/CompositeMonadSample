@@ -45,4 +45,41 @@ public class ListTest {
         assertEquals(new List<String>("hoge"), l_unit("hoge"));
 	}
 
+
+
+	// l_flatten(l_unit(l)) = l
+    @Test
+    public void testMonad1() {
+        List<Integer> list1 = new List<Integer>(1, -3, 7);
+    	assertEquals(l_flatten(l_unit(list1)), list1);
+    }
+
+	// l_flatten(l_map(l_unit, l)) =l
+    @Test
+    public void testMonad2() {
+    	List<Integer> list1 = new List<Integer>(1, -3, 7);
+    	assertEquals(l_flatten(l_map(List.<Integer>l_unit(), list1)), list1);
+    }
+
+	// l_flatten(l_flatten(lll)) = l_flatten(l_map(l_flatten, lll))
+    @Test
+    public void testMonad3() {
+    	List<List<List<Integer>>> lll = 
+    		new List<List<List<Integer>>>(
+	            new List<List<Integer>>(
+	                    new List<Integer>(0),
+	                    new List<Integer>(1, -3, 7),
+	                    new List<Integer>(1, 2)
+	                ),
+                new List<List<Integer>>(
+                        new List<Integer>(3),
+                        new List<Integer>(5, 6, 7),
+                        new List<Integer>(2, 4)
+                    )
+			);
+        System.out.println("lll = " + lll);
+    	assertEquals(
+    			l_flatten(l_flatten(lll)),
+    			l_flatten(l_map(List.<Integer>l_flatten(), lll)));
+    }
 }

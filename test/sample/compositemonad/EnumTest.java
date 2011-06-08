@@ -43,5 +43,39 @@ public class EnumTest {
         assertEquals(new Enum<String>("hoge"), e_unit("hoge"));
     }
 
+	// e_flatten(e_unit(e)) = e
+    @Test
+    public void testMonad1() {
+        Enum<Integer> enum1 = new Enum<Integer>(1, -3, 7);
+    	assertEquals(e_flatten(e_unit(enum1)), enum1);
+    }
 
+	// e_flatten(e_map(e_unit, e)) = e
+    @Test
+    public void testMonad2() {
+        Enum<Integer> enum1 = new Enum<Integer>(1, -3, 7);
+    	assertEquals(e_flatten(e_map(Enum.<Integer>e_unit(), enum1)), enum1);
+    }
+
+	// e_flatten(e_flatten(eee)) = e_flatten(e_map(e_flatten, eee))
+    @Test
+    public void testMonad3() {
+    	Enum<Enum<Enum<Integer>>> eee = 
+    		new Enum<Enum<Enum<Integer>>>(
+				new Enum<Enum<Integer>>(
+		                new Enum<Integer>(0),
+		                new Enum<Integer>(1, -3, 7),
+		                new Enum<Integer>(1, 2)
+		            ),
+	            new Enum<Enum<Integer>>(
+	                    new Enum<Integer>(3),
+	                    new Enum<Integer>(5, 6, 7),
+	                    new Enum<Integer>(2, 4)
+	                )
+			);
+        System.out.println("eee = " + eee);
+    	assertEquals(
+    			e_flatten(e_flatten(eee)),
+    			e_flatten(e_map(EnumOfList.<Integer>e_flatten(), eee)));
+    }
 }

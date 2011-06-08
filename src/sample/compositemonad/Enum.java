@@ -22,6 +22,12 @@ public class Enum<T> {
     public Enum(T... components) {
         this(new HashSet<T>(Arrays.asList(components)));
     }
+    public final boolean equals(Object other) {
+        return EqualsBuilder.reflectionEquals(this, other);
+    }
+    public final int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
+    }
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append('{');
@@ -32,12 +38,6 @@ public class Enum<T> {
         }
         sb.append('}');
         return sb.toString();
-    }
-    public final boolean equals(Object other) {
-        return EqualsBuilder.reflectionEquals(this, other);
-    }
-    public final int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
     }
 
     public static <X,Y> Enum<Y> e_map(Function<X,Y> f, Enum<X> e) {

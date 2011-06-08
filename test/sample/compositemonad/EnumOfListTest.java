@@ -2,6 +2,7 @@ package sample.compositemonad;
 
 import static sample.compositemonad.EnumOfList.el_flatten;
 import static sample.compositemonad.EnumOfList.el_unit;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
@@ -20,6 +21,7 @@ public class EnumOfListTest {
         System.out.println("elel = " + elel);
         EnumOfList<Integer>el = el_flatten(elel);
         System.out.println("el = " + el);
+		assertEquals(el1, el);
     }
 
 }

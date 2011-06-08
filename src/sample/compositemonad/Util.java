@@ -14,7 +14,7 @@ public final class Util {
             E head = rest.head();
             List<E> tail = rest.tail();
             for (X x : head.components) {
-                result.addAll(choice(path.append(x), tail));
+                result.addAll(choice(path.appended(x), tail));
             }
         }
         return result;

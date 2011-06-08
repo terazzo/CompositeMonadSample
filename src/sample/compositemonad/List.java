@@ -11,7 +11,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import com.google.common.base.Function;
 
 public class List<T> {
-    public final java.util.List<T> components;
+    private final java.util.List<T> components;
 
     public List(java.util.List<T> components) {
         if (components == null) {
@@ -25,7 +25,7 @@ public class List<T> {
     public boolean isEmpty() {
         return components.isEmpty();
     }
-    public List<T> append(T x) {
+    public List<T> appended(T x) {
         ArrayList<T> results = new ArrayList<T>(components);
         results.add(x);
         return new List<T>(results);
@@ -42,6 +42,12 @@ public class List<T> {
     	}
         return new List<T>(components.subList(1, components.size()));
     }
+    public final boolean equals(Object other) {
+        return EqualsBuilder.reflectionEquals(this, other);
+    }
+    public final int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
+    }
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append('[');
@@ -52,12 +58,6 @@ public class List<T> {
         }
         sb.append(']');
         return sb.toString();
-    }
-    public final boolean equals(Object other) {
-        return EqualsBuilder.reflectionEquals(this, other);
-    }
-    public final int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
     }
 
     public static <X,Y> List<Y> l_map(Function<X,Y> f, List<X> l) {

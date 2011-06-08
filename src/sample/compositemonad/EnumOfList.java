@@ -22,8 +22,15 @@ public class EnumOfList<X> extends Enum<List<X>> {
 
 
 
-    public static <X,Y> EnumOfList<Y> el_map(Function<X,Y> f, EnumOfList<X> el) {
+    public static <X, Y> EnumOfList<Y> el_map(Function<X, Y> f, EnumOfList<X> el) {
         return new EnumOfList<Y>(e_map(l_map(f), el));
+    }
+    public static <X, Y> Function<EnumOfList<X>, EnumOfList<Y>> el_map(final Function<X, Y> f) {
+    	return new Function<EnumOfList<X>, EnumOfList<Y>>() {
+			public EnumOfList<Y> apply(EnumOfList<X> el) {
+				return el_map(f, el);
+			}
+		};
     }
 //    public static <X> EnumOfList<X> el_flattenX(EnumOfList<EnumOfList<X>> elel) {
 //        Function<List<EnumOfList<X>>, Enum<List<List<X>>>> combinations = Util.<List<X>,EnumOfList<X>>combinations();
@@ -42,7 +49,22 @@ public class EnumOfList<X> extends Enum<List<X>> {
                       e_map(Util.<List<X>,EnumOfList<X>>combinations(), elel)
       )));
     }
+    public static <X> Function<EnumOfList<EnumOfList<X>>, EnumOfList<X>> el_flatten() {
+    	return new Function<EnumOfList<EnumOfList<X>>, EnumOfList<X>>() {
+			public EnumOfList<X> apply(EnumOfList<EnumOfList<X>> el) {
+				return el_flatten(el);
+			}
+    		
+		};
+    }
     public static <X> EnumOfList<X> el_unit(X x) {
         return new EnumOfList<X>(e_unit(l_unit(x)));
+    }
+    public static <X> Function<X, EnumOfList<X>> el_unit() {
+    	return new Function<X, EnumOfList<X>>() {
+			public EnumOfList<X> apply(X x) {
+				return el_unit(x);
+			}
+		};
     }
 }

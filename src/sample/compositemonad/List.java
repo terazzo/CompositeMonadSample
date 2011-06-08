@@ -60,14 +60,14 @@ public class List<T> {
         return sb.toString();
     }
 
-    public static <X,Y> List<Y> l_map(Function<X,Y> f, List<X> l) {
+    public static <X, Y> List<Y> l_map(Function<X, Y> f, List<X> l) {
         ArrayList<Y> results = new ArrayList<Y>();
         for (X x : l.components) {
             results.add(f.apply(x));
         }
         return new List<Y>(results);
     }
-    public static <X,Y> Function<List<X>, List<Y>> l_map(final Function<X,Y> f) {
+    public static <X, Y> Function<List<X>, List<Y>> l_map(final Function<X, Y> f) {
         return new Function<List<X>, List<Y>>() {
             public List<Y> apply(List<X> l) {
                 return l_map(f, l);
@@ -93,7 +93,7 @@ public class List<T> {
         results.add(x);
         return new List<X>(results);
     }
-    public static <X,Y> Function<X, List<X>> l_unit() {
+    public static <X> Function<X, List<X>> l_unit() {
         return new Function<X, List<X>>() {
             public List<X> apply(X x) {
                 return l_unit(x);

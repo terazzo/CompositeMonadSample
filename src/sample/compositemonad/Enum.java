@@ -40,14 +40,14 @@ public class Enum<T> {
         return sb.toString();
     }
 
-    public static <X,Y> Enum<Y> e_map(Function<X,Y> f, Enum<X> e) {
+    public static <X, Y> Enum<Y> e_map(Function<X, Y> f, Enum<X> e) {
         HashSet<Y> results = new HashSet<Y>();
         for (X x : e.components) {
             results.add(f.apply(x));
         }
         return new Enum<Y>(results);
     }
-    public static <X,Y> Function<Enum<X>, Enum<Y>> e_map(final Function<X,Y> f) {
+    public static <X, Y> Function<Enum<X>, Enum<Y>> e_map(final Function<X, Y> f) {
         return new Function<Enum<X>, Enum<Y>>() {
             public Enum<Y> apply(Enum<X> l) {
                 return e_map(f, l);
@@ -61,10 +61,24 @@ public class Enum<T> {
         }
         return new Enum<X>(results);
     }
+    public static <X> Function<Enum<Enum<X>>, Enum<X>> e_flatten() {
+    	return new Function<Enum<Enum<X>>, Enum<X>>() {
+			public Enum<X> apply(Enum<Enum<X>> ee) {
+				return e_flatten(ee);
+			}
+		};
+    }
     public static <X> Enum<X> e_unit(X x) {
         HashSet<X> results = new HashSet<X>();
         results.add(x);
         return new Enum<X>(results);
+    }
+    public static <X> Function<X, Enum<X>> e_unit() {
+    	return new Function<X, Enum<X>>() {
+			public Enum<X> apply(X x) {
+				return e_unit(x);
+			}
+		};
     }
 
 }

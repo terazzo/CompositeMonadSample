@@ -6,6 +6,9 @@ import static sample.compositemonad.Enum.e_map;
 
 import com.google.common.base.Function;
 public final class Util {
+    public static <X, E extends Enum<X>> Enum<List<X>> combinations(List<E> le) {
+        return combinations(new List<X>(), le);
+    }
     private static <X, E extends Enum<X>>
             Enum<List<X>> combinations(final List<X> path, List<E> le) {
 
@@ -21,9 +24,6 @@ public final class Util {
                 }
             }, head));
         }
-    }
-    public static <X, E extends Enum<X>> Enum<List<X>> combinations(List<E> le) {
-        return combinations(new List<X>(), le);
     }
     public static <X, E extends Enum<X>> Function<List<E>, Enum<List<X>>> combinations() {
         return new Function<List<E>, Enum<List<X>>>() {

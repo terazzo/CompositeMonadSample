@@ -13,11 +13,13 @@ import com.google.common.base.Function;
 @SuppressWarnings("unchecked")
 public class EnumOfListTest {
 
+    // テストデータ
     EnumOfList<Integer> el1 = new EnumOfList<Integer>(
             new List<Integer>(0),
             new List<Integer>(1, -3, 7),
             new List<Integer>(1, 2)
     );
+    // テストデータ
     EnumOfList<EnumOfList<Integer>> elel = new EnumOfList<EnumOfList<Integer>>(
             new List<EnumOfList<Integer>>(
                 new EnumOfList<Integer>(        // {[0], [1, -3, 7], [4, 5]}

@@ -13,7 +13,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import com.google.common.base.Function;
 
 public class Enum<T> {
-    public final Set<T> components;
+    private final Set<T> components;
 
     public Enum(Collection<T> components) {
         if (components == null) {
@@ -23,6 +23,9 @@ public class Enum<T> {
     }
     public Enum(T... components) {
         this(Arrays.asList(components));
+    }
+    public Enum(Enum<T> other) {
+        this(other.components);
     }
     public final boolean equals(Object other) {
         return EqualsBuilder.reflectionEquals(this, other);

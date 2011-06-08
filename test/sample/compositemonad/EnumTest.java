@@ -3,6 +3,7 @@ package sample.compositemonad;
 import static org.junit.Assert.assertEquals;
 import static sample.compositemonad.Enum.e_flatten;
 import static sample.compositemonad.Enum.e_map;
+import static sample.compositemonad.Enum.e_unit;
 
 import org.junit.Test;
 
@@ -35,6 +36,11 @@ public class EnumTest {
         Enum<Integer> result = e_flatten(ee);
         System.out.println("result = " + result);
         assertEquals(new Enum<Integer>(0, 1, -3, 7, 2), result);
+    }
+    @Test
+    public void testUnit() {
+        assertEquals(new Enum<Integer>(1), e_unit(1));
+        assertEquals(new Enum<String>("hoge"), e_unit("hoge"));
     }
 
 

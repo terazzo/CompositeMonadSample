@@ -7,7 +7,6 @@ import static sample.compositemonad.Enum.*;
 import org.junit.Test;
 
 
-@SuppressWarnings("unchecked")
 public class UtilTest {
     @Test
     public void testCombinations() {

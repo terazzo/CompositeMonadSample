@@ -4,13 +4,13 @@ import static org.junit.Assert.assertEquals;
 import static sample.compositemonad.Enum.e_flatten;
 import static sample.compositemonad.Enum.e_map;
 import static sample.compositemonad.Enum.e_unit;
+import static sample.compositemonad.Enum.e_bind;
 
 import org.junit.Test;
 
 import com.google.common.base.Function;
 
 
-@SuppressWarnings("unchecked")
 public class EnumTest {
     @Test
     public void testMap() {
@@ -80,4 +80,39 @@ public class EnumTest {
                 e_flatten(e_flatten(eee)),
                 e_flatten(e_map(EnumOfList.<Integer>e_flatten(), eee)));
     }
+
+    Function<Integer, Enum<Integer>> sum1 = new Function<Integer, Enum<Integer>>() {
+        public Enum<Integer> apply(Integer x) {
+            return e_unit(Integer.valueOf(x.intValue() + 1));
+        }
+    };
+    // 拡張スタイルのモナド則
+    // (return x) >>= f ≡ f x
+    @Test
+    public void testRule1() {
+        assertEquals(
+            e_bind(sum1, e_unit(1)),
+            sum1.apply(1)
+        );
+    }
+    
+    // m >>= return ≡ m
+    @Test
+    public void testRule2() {
+        Enum<Integer> m = new Enum<Integer>(0, 1, -3, 7, 2);
+        assertEquals(
+            e_bind(Enum.<Integer>e_unit(), m),
+            m
+        );
+    }
+    // (m >>= f) >>= g ≡ m >>= ( \x -> (f x >>= g) )
+    @Test
+    public void testRule3() {
+        Enum<Integer> m = new Enum<Integer>(0, 1, -3, 7, 2);
+        assertEquals(
+            e_bind(Enum.<Integer>e_unit(), m),
+            m
+        );
+    }
+
 }

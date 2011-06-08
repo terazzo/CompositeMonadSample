@@ -15,7 +15,7 @@ public final class Util {
         if (le.isEmpty()) {
             return e_unit(path);
         } else {
-            E head = le.head();
+            Enum<X> head = le.head();
             final List<E> tail = le.tail();
 
             return e_flatten(e_map(new Function<X, Enum<List<X>>>() {

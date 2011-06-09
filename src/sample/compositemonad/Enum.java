@@ -95,17 +95,9 @@ public class Enum<T> {
     }
 
     // extension style
-    public static <X, Y> Enum<Y> e_bind(Function<X, Enum<Y>> f, Enum<X> e) {
-        return
-             e_flatten(e_map(f, e));
+    public static <X, Y> Enum<Y> e_bind(Enum<X> e, Function<X, Enum<Y>> f) {
+        return e_flatten(e_map(f, e));
      }
-    public static <X, Y> Function<Enum<X>, Enum<Y>> e_bind(final Function<X, Enum<Y>> f) {
-        return new Function<Enum<X>, Enum<Y>>() {
-            public Enum<Y> apply(Enum<X> e) {
-                return e_bind(f, e);
-            }
-        };
-    }
  
 
 }

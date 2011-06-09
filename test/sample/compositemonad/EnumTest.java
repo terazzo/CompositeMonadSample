@@ -1,10 +1,13 @@
 package sample.compositemonad;
 
 import static org.junit.Assert.assertEquals;
+import static sample.compositemonad.Enum.e_bind;
 import static sample.compositemonad.Enum.e_flatten;
 import static sample.compositemonad.Enum.e_map;
 import static sample.compositemonad.Enum.e_unit;
-import static sample.compositemonad.Enum.e_bind;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -81,18 +84,48 @@ public class EnumTest {
                 e_flatten(e_map(EnumOfList.<Integer>e_flatten(), eee)));
     }
 
-    Function<Integer, Enum<Integer>> sum1 = new Function<Integer, Enum<Integer>>() {
-        public Enum<Integer> apply(Integer x) {
-            return e_unit(Integer.valueOf(x.intValue() + 1));
+    Function<Long, Enum<Long>> sum1 = new Function<Long, Enum<Long>>() {
+        public Enum<Long> apply(Long x) {
+            return e_unit(Long.valueOf(x.longValue() + 1));
         }
     };
+    Function<Long, Enum<Long>> factors = new Function<Long, Enum<Long>>() {
+        public Enum<Long> apply(Long n) {
+            if (n < 1) {
+                throw new IllegalArgumentException("arg should be positive.");
+            }
+            if (n == 1) {
+                return new Enum<Long>(1L);
+            }
+            Set<Long> result = new HashSet<Long>();
+            long k = n;
+            for (long i = 2, r = Math.round(Math.sqrt(k)); i <= r; i ++) {
+                while (k % i == 0) {
+                    result.add(i);
+                    k /= i;
+                    r = (int) Math.round(Math.sqrt(k));
+                }
+            }
+            if (k != 1) {
+                result.add(k);
+            }
+            return new Enum<Long>(result);
+        }
+    };
+    @Test
+    public void testFactors() {
+        for (long i = 2; i < 100; i++) {
+            System.out.printf("factors of %d is %s\n", i, factors.apply(i));
+        }
+    }
+    
     // 拡張スタイルのモナド則
     // (return x) >>= f ≡ f x
     @Test
     public void testRule1() {
         assertEquals(
-            e_bind(sum1, e_unit(1)),
-            sum1.apply(1)
+            e_bind(e_unit(195955200000000L), factors),
+            factors.apply(195955200000000L)
         );
     }
     
@@ -101,17 +134,21 @@ public class EnumTest {
     public void testRule2() {
         Enum<Integer> m = new Enum<Integer>(0, 1, -3, 7, 2);
         assertEquals(
-            e_bind(Enum.<Integer>e_unit(), m),
+            e_bind(m, Enum.<Integer>e_unit()),
             m
         );
     }
     // (m >>= f) >>= g ≡ m >>= ( \x -> (f x >>= g) )
     @Test
     public void testRule3() {
-        Enum<Integer> m = new Enum<Integer>(0, 1, -3, 7, 2);
+        Enum<Long> m = new Enum<Long>(81L, 82L, 83L, 84L, 85L);
         assertEquals(
-            e_bind(Enum.<Integer>e_unit(), m),
-            m
+            e_bind(e_bind(m, factors), sum1),
+            e_bind(m, new Function<Long, Enum<Long>>() {
+                public Enum<Long> apply(Long l) {
+                    return e_bind(factors.apply(l), sum1);
+                }
+            })
         );
     }
 

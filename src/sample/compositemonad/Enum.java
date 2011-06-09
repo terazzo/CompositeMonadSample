@@ -24,8 +24,14 @@ public class Enum<T> {
     public Enum(T... components) {
         this(Arrays.asList(components));
     }
+    private static <A> A nullChecked(A o) throws IllegalArgumentException {
+        if (o == null) {
+            throw new IllegalArgumentException("the arg should not be null");
+        }
+        return o;
+    }
     public Enum(Enum<T> other) {
-        this(other.components);
+        this(nullChecked(other.components));
     }
     public final boolean equals(Object other) {
         return EqualsBuilder.reflectionEquals(this, other);

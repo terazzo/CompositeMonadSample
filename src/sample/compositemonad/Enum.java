@@ -74,8 +74,8 @@ public class Enum<T> {
     // Function version
     public static <X, Y> Function<Enum<X>, Enum<Y>> e_map(final Function<X, Y> f) {
         return new Function<Enum<X>, Enum<Y>>() {
-            public Enum<Y> apply(Enum<X> l) {
-                return e_map(f, l);
+            public Enum<Y> apply(Enum<X> e) {
+                return e_map(f, e);
             }
         };
     }

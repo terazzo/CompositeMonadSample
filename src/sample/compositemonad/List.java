@@ -106,4 +106,34 @@ public class List<T> {
             }
         };
     }
+
+
+
+
+
+    // extension style
+    public static <X, Y> List<Y> l_bind(List<X> l, Function<X, List<Y>> f) {
+        return l_flatten(l_map(f, l));
+    }
+
+    // Function version
+    public static <X, Y> Function<List<X>, List<Y>> l_bind(final Function<X, List<Y>> f) {
+        return new Function<List<X>, List<Y>>() {
+            public List<Y> apply(List<X> l) {
+                return l_bind(l, f);
+            }
+        };
+    }
+    // map‚ğunit‚Æbind‚Å‘‚¢‚Ä‚İ‚é
+    public static <X, Y> List<Y> l_map_by_ext(final Function<X, Y> f, List<X> l) {
+        return l_bind(l, new Function<X, List<Y>>() {
+            public List<Y> apply(X x) {
+                return l_unit(f.apply(x));
+            }
+        });
+    }
+    // flatten‚ğunit‚Æbind‚Å‘‚¢‚Ä‚İ‚é
+    public static <X> List<X> l_flatten_by_ext(List<List<X>> ll) {
+        return l_bind(ll, l_bind(List.<X>l_unit()));
+    }
 }
